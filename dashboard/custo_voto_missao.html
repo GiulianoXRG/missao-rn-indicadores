@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custo do Voto Missão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Cores da identidade visual do Partido Missão (missao.org.br): preto, amarelo-ouro e branco */
+:root {
+  color-scheme: light;
+  --preto: #000000; --ouro: #fcbd27; --ouro-forte: #eebb00;
+  --page: #f6f5f1;
+  --surface: #ffffff;
+  --ink: #0b0b0b;
+  --ink-2: #4f4e4a;
+  --muted: #86847d;
+  --grid: #e6e4dc;
+  --axis: #c3c2b7;
+  --border: rgba(11,11,11,0.10);
+  --wash: rgba(11,11,11,0.04);
+  /* séries: ouro (Missão/receita), grafite, cinza médio */
+  --s1: #eebb00; --s2: #2b2b2b; --s3: #a19f97;
+  --neutral: #d6d4cc;
+  --warn-bg: #fff6dc; --warn-ink: #5e4500; --warn-mark: var(--ouro);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #000000; --surface: #141414; --ink: #ffffff; --ink-2: #e0e0e0; --muted: #8f8d87;
+    --grid: #262626; --axis: #3a3a38; --border: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+    --s1: #fcbd27; --s2: #e6e6e6; --s3: #7a7974;
+    --neutral: #3d3d3b;
+    --warn-bg: #1f1a0a; --warn-ink: #f6dc96;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #000000; --surface: #141414; --ink: #ffffff; --ink-2: #e0e0e0; --muted: #8f8d87;
+  --grid: #262626; --axis: #3a3a38; --border: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+  --s1: #fcbd27; --s2: #e6e6e6; --s3: #7a7974;
+  --neutral: #3d3d3b;
+  --warn-bg: #1f1a0a; --warn-ink: #f6dc96;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.45 Afacad, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.topo {
+  background: radial-gradient(37% 60% at 100% 100%, #111 0%, #000 100%); color: #fff;
+  border-bottom: 3px solid var(--ouro);
+}
+.topo .wrap { padding-top: 28px; padding-bottom: 24px; }
+.marca { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+.marca span { color: var(--ouro); }
+.topo h1 { font-size: 30px; font-weight: 700; margin: 14px 0 4px; letter-spacing: -0.01em; line-height: 1.1; }
+.topo h1 span { color: var(--ouro); }
+.topo p { margin: 0; color: #e0e0e0; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.nav-links a { color: #e0e0e0; text-decoration: none; font-size: 14px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 4px 14px; }
+.nav-links a:hover { background: var(--ouro); color: #000; border-color: var(--ouro); }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+.aviso {
+  margin: 0 0 4px; padding: 10px 14px; border-radius: 8px; background: var(--warn-bg); color: var(--warn-ink);
+  border-left: 4px solid var(--warn-mark); font-size: 14px;
+}
+.filtros { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin: 20px 0 16px; }
+.filtro { display: flex; align-items: center; gap: 8px; }
+.filtro > span { color: var(--ink-2); font-size: 14px; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 2px; }
+.seg button {
+  font: inherit; font-size: 14px; border: 0; background: transparent; color: var(--ink-2);
+  padding: 5px 14px; border-radius: 8px; cursor: pointer;
+}
+.seg button:hover { background: var(--wash); }
+.seg button[aria-pressed="true"] { background: var(--ouro); color: #000; font-weight: 600; }
+.tema { margin-left: auto; }
+
+.kpis { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 12px; }
+.kpi, .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+.kpi { padding: 14px 16px; min-width: 0; }
+.kpi .rot { color: var(--ink-2); font-size: 14px; }
+.kpi .val { font-size: 28px; font-weight: 600; margin-top: 2px; white-space: nowrap; }
+.kpi .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.kpi.hero { background: #000; border-color: rgba(255,255,255,0.12); }
+.kpi.hero .rot { color: #e0e0e0; }
+.kpi.hero .val { font-size: 52px; line-height: 1.05; color: var(--ouro); font-weight: 700; }
+.kpi.hero .sub { color: #b5b3ab; }
+
+.grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.card { padding: 16px; min-width: 0; }
+.card.largo { grid-column: 1 / -1; }
+.card h2 { font-size: 18px; font-weight: 700; margin: 0; }
+.card .desc { color: var(--ink-2); font-size: 14px; margin: 2px 0 10px; }
+.legenda { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }
+.legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.legenda i.dot { border-radius: 50%; }
+.chart { width: 100%; position: relative; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.chart text { font-family: inherit; }
+.nota { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+.tabela-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 7px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
+th { color: var(--ink-2); font-weight: 600; cursor: pointer; user-select: none; position: relative; }
+th:hover { color: var(--ink); }
+th.txt, td.txt { text-align: left; }
+td { font-variant-numeric: tabular-nums; }
+tbody tr:hover { background: var(--wash); }
+th[aria-sort="ascending"]::after { content: " ▲"; font-size: 10px; }
+th[aria-sort="descending"]::after { content: " ▼"; font-size: 10px; }
+.cargo-tag { color: var(--muted); font-size: 12px; }
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; opacity: 0; transition: opacity .08s;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); padding: 8px 10px; font-size: 12px; max-width: 280px;
+}
+#tip b { font-weight: 600; }
+#tip .lin { display: flex; justify-content: space-between; gap: 14px; }
+#tip .lin span:first-child { color: var(--ink-2); }
+
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .kpi.hero { grid-column: 1 / -1; }
+  .grade { grid-template-columns: 1fr; }
+  .tema { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="wrap">
+    <div class="marca">missão <span>14</span></div>
+    <h1>Custo do voto — <span>RN 2026</span></h1>
+    <p>Deputados federal e estadual, 1º turno. Custo do voto = dinheiro ÷ votos nominais.</p>
+    <nav class="nav-links"><a href="site_missao.html">Indicadores eleitorais ↗</a><a href="../mapas/mapa_interativo_missao.html">Mapa interativo ↗</a></nav>
+  </div>
+</header>
+<div class="wrap">
+  <div class="aviso" id="aviso"></div>
+
+  <div class="filtros">
+    <div class="filtro"><span>Cargo</span>
+      <div class="seg" id="f-cargo">
+        <button data-v="TODOS" aria-pressed="true">Todos</button>
+        <button data-v="DEPUTADO FEDERAL">Federal</button>
+        <button data-v="DEPUTADO ESTADUAL">Estadual</button>
+      </div>
+    </div>
+    <div class="filtro"><span>Dinheiro</span>
+      <div class="seg" id="f-metrica">
+        <button data-v="receita" aria-pressed="true">Receita arrecadada</button>
+        <button data-v="despesa">Despesa contratada</button>
+      </div>
+    </div>
+    <div class="filtro tema"><span>Tema</span>
+      <div class="seg" id="f-tema">
+        <button data-v="auto" aria-pressed="true">Auto</button>
+        <button data-v="light">Claro</button>
+        <button data-v="dark">Escuro</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grade">
+    <div class="card largo">
+      <h2>Custo do voto por candidato</h2>
+      <p class="desc">Quanto cada voto custou, pela receita arrecadada e pela despesa contratada. Escala logarítmica: cada marca da grade é 10× a anterior.</p>
+      <div class="legenda">
+        <span><i class="dot" style="background:var(--s1)"></i>Receita ÷ votos</span>
+        <span><i class="dot" style="background:var(--s2)"></i>Despesa ÷ votos</span>
+        <span><i style="background:var(--muted);width:2px;height:12px;border-radius:0"></i>Média da Missão (métrica selecionada)</span>
+      </div>
+      <div class="chart" id="c-ranking"></div>
+    </div>
+
+    <div class="card">
+      <h2>Votos × dinheiro</h2>
+      <p class="desc">Cada ponto é um candidato. As diagonais marcam custos fixos por voto: abaixo da linha, voto mais barato.</p>
+      <div class="chart" id="c-dispersao"></div>
+    </div>
+
+    <div class="card">
+      <h2>Missão × outras agremiações</h2>
+      <p class="desc">Custo médio do voto (total de dinheiro ÷ total de votos nominais) de cada agremiação.</p>
+      <div class="chart" id="c-agrem"></div>
+    </div>
+
+    <div class="card">
+      <h2>De onde veio o dinheiro</h2>
+      <p class="desc">Receita de cada candidato por origem.</p>
+      <div class="legenda" id="leg-origem"></div>
+      <div class="chart" id="c-origem"></div>
+    </div>
+
+    <div class="card">
+      <h2>Onde o dinheiro foi gasto</h2>
+      <p class="desc">Despesa contratada por tipo, somando os candidatos do filtro.</p>
+      <div class="chart" id="c-gastos"></div>
+    </div>
+
+    <div class="card largo">
+      <h2>Tabela dos candidatos</h2>
+      <p class="desc">Clique no cabeçalho para ordenar.</p>
+      <div class="tabela-wrap"><table id="t-cand"></table></div>
+    </div>
+
+    <div class="card largo">
+      <h2>Principais fornecedores</h2>
+      <p class="desc">Todos os candidatos da Missão, os dois cargos somados.</p>
+      <div class="tabela-wrap"><table id="t-forn"></table></div>
+    </div>
+  </section>
+  <p class="nota" id="rodape"></p>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DADOS = {"gerado_em":"11/10/2026","candidatos":[{"cargo":"DEPUTADO ESTADUAL","nr":"14000","nome":"FÁBIO SILVEIRA","votos":5955,"situacao":"NÃO ELEITO","receita":8272.4,"despesa":1247.06,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":3659.86,"coletivo":937.76,"proprios":0,"outros":0,"doadores":21,"prestacao":"RELATÓRIO FINANCEIRO","data":"29/09/2026"},{"cargo":"DEPUTADO ESTADUAL","nr":"14777","nome":"RAYANNE FIGUEIREDO","votos":720,"situacao":"NÃO ELEITO","receita":7142.78,"despesa":4617.68,"fefc":6988.78,"fundo_partidario":0,"pessoas_fisicas":154,"coletivo":0,"proprios":0,"outros":0,"doadores":4,"prestacao":"RELATÓRIO FINANCEIRO","data":"01/10/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1414","nome":"VIVIANE AVELINO","votos":2040,"situacao":"NÃO ELEITO","receita":7350.78,"despesa":2061.34,"fefc":6988.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":362,"proprios":0,"outros":0,"doadores":1,"prestacao":"RELATÓRIO FINANCEIRO","data":"29/09/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1444","nome":"ANA CLARA GURGEL","votos":1419,"situacao":"NÃO ELEITO","receita":6988.78,"despesa":3140.03,"fefc":6988.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":0,"proprios":0,"outros":0,"doadores":0,"prestacao":"RELATÓRIO FINANCEIRO","data":"25/09/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1400","nome":"ABIMAEL COSTA","votos":1309,"situacao":"NÃO ELEITO","receita":3674.78,"despesa":2038,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":0,"proprios":0,"outros":0,"doadores":0,"prestacao":"RELATÓRIO FINANCEIRO","data":"25/09/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1447","nome":"ALANNA BEATRIZ","votos":556,"situacao":"NÃO ELEITO","receita":7775.78,"despesa":2726.4,"fefc":6988.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":787,"proprios":0,"outros":0,"doadores":1,"prestacao":"RELATÓRIO FINANCEIRO","data":"14/09/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1411","nome":"DR. SALOMÃO","votos":540,"situacao":"NÃO ELEITO","receita":3724.78,"despesa":1734.5,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":50,"coletivo":0,"proprios":0,"outros":0,"doadores":1,"prestacao":"RELATÓRIO FINANCEIRO","data":"01/10/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1455","nome":"IGOR RAYAN","votos":452,"situacao":"NÃO ELEITO","receita":3779.78,"despesa":3115.03,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":105,"proprios":0,"outros":0,"doadores":1,"prestacao":"RELATÓRIO FINANCEIRO","data":"29/09/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1477","nome":"FELIX SANTOS","votos":400,"situacao":"NÃO ELEITO","receita":5777.21,"despesa":2418.77,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":1978.43,"coletivo":124,"proprios":0,"outros":0,"doadores":111,"prestacao":"RELATÓRIO FINANCEIRO","data":"01/10/2026"},{"cargo":"DEPUTADO FEDERAL","nr":"1401","nome":"GABRIEL BOTELHO","votos":362,"situacao":"NÃO ELEITO","receita":3674.78,"despesa":844.5,"fefc":3674.78,"fundo_partidario":0,"pessoas_fisicas":0,"coletivo":0,"proprios":0,"outros":0,"doadores":0,"prestacao":"RELATÓRIO FINANCEIRO","data":"29/09/2026"}],"excluidos":[{"nr":"1441","nome":"IGOR FERNANDES","cargo":"DEPUTADO FEDERAL","votos":66,"motivo":"não fez campanha de fato"}],"agremiacoes":[{"cargo":"DEPUTADO ESTADUAL","agrem":"PL","candidatos":25,"votos":518179,"receita":9929065.56,"despesa":7029785.67,"eleitos":7},{"cargo":"DEPUTADO ESTADUAL","agrem":"FED PT/PC do B/PV","candidatos":21,"votos":464294,"receita":5803874.9,"despesa":4465681.75,"eleitos":7},{"cargo":"DEPUTADO ESTADUAL","agrem":"FED UNIÃO/PP","candidatos":19,"votos":430564,"receita":8551402.29,"despesa":7655496.29,"eleitos":6},{"cargo":"DEPUTADO ESTADUAL","agrem":"FED PSDB/CIDADANIA","candidatos":25,"votos":270630,"receita":2382705.38,"despesa":2822097.9,"eleitos":3},{"cargo":"DEPUTADO ESTADUAL","agrem":"MDB","candidatos":23,"votos":140279,"receita":3155255.8,"despesa":2514516.14,"eleitos":1},{"cargo":"DEPUTADO ESTADUAL","agrem":"FED PSOL/REDE","candidatos":18,"votos":20323,"receita":216350.15,"despesa":149876.89,"eleitos":0},{"cargo":"DEPUTADO ESTADUAL","agrem":"FED PRD/SOLIDARIEDADE","candidatos":13,"votos":2766,"receita":91232.09,"despesa":43153.51,"eleitos":0},{"cargo":"DEPUTADO ESTADUAL","agrem":"UP","candidatos":2,"votos":743,"receita":62306.45,"despesa":0,"eleitos":0},{"cargo":"DEPUTADO ESTADUAL","agrem":"PSTU","candidatos":2,"votos":377,"receita":20004,"despesa":17000,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"PL","candidatos":9,"votos":760545,"receita":14476472.54,"despesa":11512623.81,"eleitos":3},{"cargo":"DEPUTADO FEDERAL","agrem":"FED PT/PC do B/PV","candidatos":9,"votos":613523,"receita":11785653.08,"despesa":8152369.06,"eleitos":3},{"cargo":"DEPUTADO FEDERAL","agrem":"FED UNIÃO/PP","candidatos":9,"votos":476691,"receita":15148871.54,"despesa":12906658.67,"eleitos":2},{"cargo":"DEPUTADO FEDERAL","agrem":"PDT","candidatos":9,"votos":15974,"receita":1952754.8,"despesa":1193773.9,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"AVANTE","candidatos":8,"votos":7645,"receita":467400,"despesa":318018.25,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"FED PRD/SOLIDARIEDADE","candidatos":9,"votos":7609,"receita":489810,"despesa":199287.38,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"FED PSDB/CIDADANIA","candidatos":9,"votos":7003,"receita":157910,"despesa":56901.68,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"NOVO","candidatos":9,"votos":5355,"receita":257105,"despesa":145955.55,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"PSB","candidatos":6,"votos":2493,"receita":97442.5,"despesa":63028.95,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"UP","candidatos":2,"votos":935,"receita":52070,"despesa":0,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"MOBILIZA","candidatos":9,"votos":859,"receita":85000,"despesa":64691,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"FED PSOL/REDE","candidatos":5,"votos":631,"receita":54002.98,"despesa":34775.55,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"DC","candidatos":7,"votos":530,"receita":5557.5,"despesa":3070.6,"eleitos":0},{"cargo":"DEPUTADO ESTADUAL","agrem":"MISSÃO","candidatos":2,"votos":6675,"receita":15415.18,"despesa":5864.74,"eleitos":0},{"cargo":"DEPUTADO FEDERAL","agrem":"MISSÃO","candidatos":8,"votos":7078,"receita":42746.67,"despesa":18078.57,"eleitos":0}],"despesas":[{"nr":"1400","tipo":"Alimentação","valor":78},{"nr":"1477","tipo":"Alimentação","valor":303.8},{"nr":"14777","tipo":"Alimentação","valor":421.7},{"nr":"14000","tipo":"Combustíveis e lubrificantes","valor":311.82},{"nr":"1447","tipo":"Combustíveis e lubrificantes","valor":100},{"nr":"14777","tipo":"Combustíveis e lubrificantes","valor":401.03},{"nr":"1400","tipo":"Criação e inclusão de páginas na internet","valor":40},{"nr":"1400","tipo":"Despesa com Impulsionamento de Conteúdos","valor":400},{"nr":"1411","tipo":"Despesa com Impulsionamento de Conteúdos","valor":50},{"nr":"1447","tipo":"Despesa com Impulsionamento de Conteúdos","valor":295},{"nr":"1455","tipo":"Despesa com Impulsionamento de Conteúdos","valor":695.47},{"nr":"14777","tipo":"Despesa com Impulsionamento de Conteúdos","valor":40},{"nr":"14777","tipo":"Despesas com pessoal","valor":50},{"nr":"1400","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":1},{"nr":"14000","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":2},{"nr":"1401","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":2},{"nr":"1411","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":4.5},{"nr":"1414","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":1},{"nr":"1444","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":3.5},{"nr":"1447","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":1.5},{"nr":"1455","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":2},{"nr":"1477","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":3.13},{"nr":"14777","tipo":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito","valor":5},{"nr":"1414","tipo":"Eventos de promoção da candidatura","valor":1000},{"nr":"1455","tipo":"Eventos de promoção da candidatura","valor":130},{"nr":"1477","tipo":"Eventos de promoção da candidatura","valor":1650},{"nr":"1444","tipo":"Locação/cessão de bens móveis (exceto veículos)","valor":300},{"nr":"1444","tipo":"Materiais de expediente","valor":37.53},{"nr":"14777","tipo":"Materiais de expediente","valor":168.95},{"nr":"1411","tipo":"Produção de jingles, vinhetas e slogans","valor":110},{"nr":"1401","tipo":"Produção de programas de rádio, televisão ou vídeo","valor":166},{"nr":"1411","tipo":"Publicidade por adesivos","valor":750},{"nr":"1455","tipo":"Publicidade por adesivos","valor":1630.5},{"nr":"1400","tipo":"Publicidade por materiais impressos","valor":1353},{"nr":"14000","tipo":"Publicidade por materiais impressos","valor":918},{"nr":"1401","tipo":"Publicidade por materiais impressos","valor":676.5},{"nr":"1411","tipo":"Publicidade por materiais impressos","valor":820},{"nr":"1414","tipo":"Publicidade por materiais impressos","valor":1055},{"nr":"1444","tipo":"Publicidade por materiais impressos","valor":2199},{"nr":"1447","tipo":"Publicidade por materiais impressos","valor":825.25},{"nr":"1455","tipo":"Publicidade por materiais impressos","valor":655.5},{"nr":"1477","tipo":"Publicidade por materiais impressos","valor":400},{"nr":"14777","tipo":"Publicidade por materiais impressos","valor":2031},{"nr":"1400","tipo":"Serviços prestados por terceiros","valor":166},{"nr":"1444","tipo":"Serviços prestados por terceiros","valor":600},{"nr":"1447","tipo":"Serviços prestados por terceiros","valor":1492.95},{"nr":"1477","tipo":"Serviços prestados por terceiros","valor":60},{"nr":"14777","tipo":"Serviços prestados por terceiros","valor":1500},{"nr":"14000","tipo":"Taxa de Administração de Financiamento Coletivo","valor":15.24},{"nr":"1414","tipo":"Taxa de Administração de Financiamento Coletivo","valor":5.34},{"nr":"1447","tipo":"Taxa de Administração de Financiamento Coletivo","valor":11.7},{"nr":"1455","tipo":"Taxa de Administração de Financiamento Coletivo","valor":1.56},{"nr":"1477","tipo":"Taxa de Administração de Financiamento Coletivo","valor":1.84}],"fornecedores":[{"nome":"INDUSTRIA GRAFICA POTIGUAR E SERVICOS LTDA","valor":6218.75,"candidatos":5,"tipos":"Publicidade por materiais impressos | Publicidade por adesivos"},{"nome":"GRID COMUNICACAO VISUAL, SINALIZACAO E EVENTOS LTDA","valor":2199,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"CAMARA DE DIRIGENTES LOJISTAS DE NATAL","valor":1650,"candidatos":1,"tipos":"Eventos de promoção da candidatura"},{"nome":"Larissa Guedes dos Santos","valor":1550,"candidatos":1,"tipos":"Despesas com pessoal | Serviços prestados por terceiros"},{"nome":"INDÚSTRIA GRÁFICA POTIGUAR E SERVIÇOS LTDA","valor":1353,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"SHPP BRASIL INSTITUICAO DE PAGAMENTO E SERVICOS DE PAGAMENTOS LTDA","valor":1292.95,"candidatos":1,"tipos":"Serviços prestados por terceiros"},{"nome":"JOSE JOELSON DOS SANTOS FILHO","valor":1055,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"K. C. M. DOS REIS ALMEIDA","valor":1000,"candidatos":1,"tipos":"Eventos de promoção da candidatura"},{"nome":"Facebook","valor":825.47,"candidatos":1,"tipos":"Eventos de promoção da candidatura | Despesa com Impulsionamento de Conteúdos"},{"nome":"WALLACE SANTOS PEREIRA","valor":820,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"FELIPE BORGES DE ANDRADE","valor":750,"candidatos":1,"tipos":"Publicidade por adesivos"},{"nome":"FACEBOOK SERVICOS ONLINE DO BRASIL LTDA.","valor":745,"candidatos":3,"tipos":"Despesa com Impulsionamento de Conteúdos"},{"nome":"Evelany De Melo Maia","valor":600,"candidatos":1,"tipos":"Serviços prestados por terceiros"},{"nome":"PORTAL GRAFICA E COMUNICACAO VISUAL LTDA","valor":383,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"Bruno De Souza Melo","valor":332,"candidatos":2,"tipos":"Serviços prestados por terceiros | Produção de programas de rádio, televisão ou vídeo"},{"nome":"Posto São Luiz 1","valor":311.82,"candidatos":1,"tipos":"Combustíveis e lubrificantes"},{"nome":"Wallace Santos Pereira Me","valor":285,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"Bco do Brasil S.A.","valor":250,"candidatos":1,"tipos":"Publicidade por materiais impressos"},{"nome":"ADRIANO LACERDA DE LIMA","valor":200,"candidatos":1,"tipos":"Locação/cessão de bens móveis (exceto veículos)"},{"nome":"NINA BEATRIZ MARINHO","valor":200,"candidatos":1,"tipos":"Serviços prestados por terceiros"},{"nome":"JVC COMERCIAL LTDA","valor":185.43,"candidatos":1,"tipos":"Combustíveis e lubrificantes"},{"nome":"V L VEBER RESTAURANTE","valor":182,"candidatos":1,"tipos":"Alimentação"},{"nome":"CIRNE IRMAOS CIA LTDA","valor":168.95,"candidatos":1,"tipos":"Materiais de expediente"},{"nome":"FRANCIEDNA DE OLIVEIRA FELIPE NOGUEIRA LTDA","valor":158,"candidatos":1,"tipos":"Alimentação"},{"nome":"BRASASFOOD RESTAURANTES MIDWAY LTDA","valor":145.8,"candidatos":1,"tipos":"Alimentação"},{"nome":"POSTO DE COMBUSTIVEIS STOPCAR LTDA","valor":143.33,"candidatos":1,"tipos":"Combustíveis e lubrificantes"},{"nome":"RANCHO RESTAURANTE LTDA","valor":117.7,"candidatos":1,"tipos":"Alimentação"},{"nome":"LUX MARKETING LTDA","valor":110,"candidatos":1,"tipos":"Produção de jingles, vinhetas e slogans"},{"nome":"61.385.543 ALEXANDRE SIQUEIRA COCENTINO","valor":100,"candidatos":1,"tipos":"Locação/cessão de bens móveis (exceto veículos)"},{"nome":"PARNAMIRIM COMERCIO DE COMBUSTIVEIS PLANALTO LTDA","valor":100,"candidatos":1,"tipos":"Combustíveis e lubrificantes"},{"nome":"NUCLEO DE INFORMACAO E COORDENACAO DO PONTO BR - NIC .BR","valor":80,"candidatos":2,"tipos":"Despesa com Impulsionamento de Conteúdos | Criação e inclusão de páginas na internet"},{"nome":"VP RESTAURANTES LTDA","valor":78,"candidatos":1,"tipos":"Alimentação"},{"nome":"RPRN COMERCIO DE COMBUSTIVEIS LTDA","valor":72.27,"candidatos":1,"tipos":"Combustíveis e lubrificantes"},{"nome":"61.645.527 HAROLDO PEREIRA HENRIQUES","valor":62,"candidatos":1,"tipos":"Alimentação"},{"nome":"FELTRE NATAL - COMERCIO DE ALIMENTOS LTDA","valor":60,"candidatos":1,"tipos":"Alimentação"},{"nome":"62.089.754 JULLIO CEZAR SILVA DOS SANTOS","valor":60,"candidatos":1,"tipos":"Serviços prestados por terceiros"},{"nome":"QueroApoiar.com.br","valor":48.79,"candidatos":6,"tipos":"Taxa de Administração de Financiamento Coletivo"},{"nome":"Somatex Comercial LTDA","valor":37.53,"candidatos":1,"tipos":"Materiais de expediente"},{"nome":"#NULO","valor":25.63,"candidatos":10,"tipos":"Encargos financeiros, taxas bancárias e/ou op. cartão de crédito"}]};
+
+// ---------- estado e formatação ----------
+const estado = { cargo: "TODOS", metrica: "receita", ordTab: { col: "custo", dir: -1 } };
+const ROT_METRICA = { receita: "Receita", despesa: "Despesa" };
+const fmtBRL = (v, d = 2) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtNum = v => v.toLocaleString("pt-BR");
+const fmtPct = v => v > 0 && v < 1 ? "<1%" : v.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + "%";
+const fmtCompacto = v => v >= 1e6 ? "R$ " + (v / 1e6).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " mi"
+  : v >= 1e3 ? "R$ " + (v / 1e3).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " mil" : fmtBRL(v, v > 0 && v < 1 ? 2 : 0);
+const cargoCurto = c => c === "DEPUTADO FEDERAL" ? "Federal" : "Estadual";
+const titulo = s => s.toLowerCase().replace(/(^|[\s.(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+const cortar = (t, px, cw = 6.8) => t.length * cw <= px ? t : t.slice(0, Math.max(1, Math.floor(px / cw) - 1)) + "…";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const custo = (d, m = estado.metrica) => d.votos > 0 ? d[m] / d.votos : null;
+const soma = (arr, f) => arr.reduce((s, d) => s + (typeof f === "function" ? f(d) : d[f]), 0);
+const cor = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function candidatosFiltrados() {
+  return DADOS.candidatos.filter(d => estado.cargo === "TODOS" || d.cargo === estado.cargo);
+}
+
+// ---------- tooltip ----------
+const tip = document.getElementById("tip");
+function mostrarTip(ev, html) {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+}
+const esconderTip = () => { tip.style.opacity = 0; };
+const linha = (a, b) => `<div class="lin"><span>${a}</span><span>${b}</span></div>`;
+function tipCandidato(d) {
+  return `<b>${esc(titulo(d.nome))}</b> <span class="cargo-tag">${d.nr} · ${cargoCurto(d.cargo)}</span>` +
+    linha("Votos", fmtNum(d.votos)) +
+    linha("Receita", fmtBRL(d.receita)) + linha("Despesa", fmtBRL(d.despesa)) +
+    linha("Receita ÷ voto", d.votos ? fmtBRL(d.receita / d.votos) : "—") +
+    linha("Despesa ÷ voto", d.votos ? fmtBRL(d.despesa / d.votos) : "—");
+}
+// liga tooltips aos elementos com data-i dentro de um container
+function ligarTips(el, fn) {
+  el.querySelectorAll("[data-i]").forEach(n => {
+    n.addEventListener("mousemove", ev => mostrarTip(ev, fn(+n.dataset.i)));
+    n.addEventListener("mouseleave", esconderTip);
+  });
+}
+
+// ---------- escalas ----------
+const linear = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+const logEsc = (d0, d1, r0, r1) => v => r0 + (Math.log10(v) - Math.log10(d0)) / (Math.log10(d1) - Math.log10(d0)) * (r1 - r0);
+const pot10Abaixo = v => Math.pow(10, Math.floor(Math.log10(v)));
+const pot10Acima = v => Math.pow(10, Math.ceil(Math.log10(v)));
+function passoBonito(max, n = 5) {
+  const bruto = max / n, p = Math.pow(10, Math.floor(Math.log10(bruto))), r = bruto / p;
+  return (r <= 1 ? 1 : r <= 2 ? 2 : r <= 5 ? 5 : 10) * p;
+}
+// barra horizontal: ponta arredondada (4px) à direita, quadrada na base
+function barraH(x0, y, w, h) {
+  if (w <= 0) return "";
+  const r = Math.min(4, w, h / 2);
+  return `M${x0},${y}h${w - r}a${r},${r} 0 0 1 ${r},${r}v${h - 2 * r}a${r},${r} 0 0 1 ${-r},${r}h${-(w - r)}z`;
+}
+
+// ---------- KPIs ----------
+function renderKpis() {
+  const c = candidatosFiltrados(), m = estado.metrica;
+  const votos = soma(c, "votos"), din = soma(c, m), receita = soma(c, "receita"), fefc = soma(c, "fefc");
+  const ag = DADOS.agremiacoes.filter(a => estado.cargo === "TODOS" || a.cargo === estado.cargo);
+  const outrosVotos = soma(ag.filter(a => a.agrem !== "MISSÃO"), "votos");
+  const outrosDin = soma(ag.filter(a => a.agrem !== "MISSÃO"), m);
+  const media = din / votos, mediaOutros = outrosDin / outrosVotos;
+  const vezes = mediaOutros / media;
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi hero"><div class="rot">Custo médio do voto (${ROT_METRICA[m].toLowerCase()})</div>
+      <div class="val">${fmtBRL(media)}</div>
+      <div class="sub">Demais agremiações: ${fmtBRL(mediaOutros)} por voto${vezes >= 1 ? ` — ${vezes.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}× o da Missão` : ""}</div></div>
+    <div class="kpi"><div class="rot">Votos nominais</div><div class="val">${fmtNum(votos)}</div>
+      <div class="sub">${c.length} candidatos</div></div>
+    <div class="kpi"><div class="rot">Receita arrecadada</div><div class="val">${fmtCompacto(receita)}</div>
+      <div class="sub">${fmtBRL(receita / votos)} por voto</div></div>
+    <div class="kpi"><div class="rot">Despesa contratada</div><div class="val">${fmtCompacto(soma(c, "despesa"))}</div>
+      <div class="sub">${fmtPct(100 * soma(c, "despesa") / receita)} da receita</div></div>
+    <div class="kpi"><div class="rot">Vindo do fundo eleitoral</div><div class="val">${fmtPct(100 * fefc / receita)}</div>
+      <div class="sub">${fmtCompacto(fefc)} do FEFC</div></div>`;
+}
+
+// ---------- ranking (dumbbell, eixo log) ----------
+function renderRanking() {
+  const el = document.getElementById("c-ranking"), W = el.clientWidth;
+  const m = estado.metrica, outra = m === "receita" ? "despesa" : "receita";
+  const c = candidatosFiltrados().filter(d => d.votos > 0)
+    .map((d, i) => ({ ...d, i: DADOS.candidatos.indexOf(d) }))
+    .sort((a, b) => custo(b) - custo(a));
+  const rotW = Math.min(190, W * 0.38), padR = 64, linhaH = 30, top = 22;
+  const H = top + c.length * linhaH + 6;
+  const vals = c.flatMap(d => [custo(d, "receita"), custo(d, "despesa")]).filter(v => v > 0);
+  const d0 = pot10Abaixo(Math.min(...vals)), d1 = pot10Acima(Math.max(...vals));
+  const x = logEsc(d0, d1, rotW, W - padR);
+  const media = soma(c, m) / soma(c, "votos");
+  let s = "";
+  for (let t = d0; t <= d1 * 1.0001; t *= 10) {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${top - 6}" y2="${H}" stroke="var(--grid)"/>`;
+    s += `<text x="${x(t)}" y="${top - 10}" text-anchor="middle" font-size="12" fill="var(--muted)">${fmtBRL(t, t < 1 ? 2 : 0)}</text>`;
+  }
+  s += `<line x1="${x(media)}" x2="${x(media)}" y1="${top - 6}" y2="${H}" stroke="var(--muted)" stroke-width="1.5"/>`;
+  c.forEach((d, k) => {
+    const y = top + k * linhaH + linhaH / 2;
+    const vm = custo(d, m), vo = custo(d, outra);
+    const xm = vm > 0 ? x(vm) : null, xo = vo > 0 ? x(vo) : null;
+    s += `<g data-i="${d.i}">`;
+    s += `<rect x="0" y="${y - linhaH / 2}" width="${W}" height="${linhaH}" fill="transparent"/>`;
+    const sub = `${cargoCurto(d.cargo) === "Federal" ? "F" : "E"} · ${fmtNum(d.votos)} votos`;
+    s += W < 560
+      ? `<text x="0" y="${y - 1}" font-size="14" fill="var(--ink)">${esc(titulo(d.nome))}</text><text x="0" y="${y + 12}" font-size="12" fill="var(--muted)">${sub}</text>`
+      : `<text x="0" y="${y + 4}" font-size="14" fill="var(--ink)">${esc(titulo(d.nome))} <tspan fill="var(--muted)" font-size="12">${sub}</tspan></text>`;
+    if (xm !== null && xo !== null) s += `<line x1="${xm}" x2="${xo}" y1="${y}" y2="${y}" stroke="var(--axis)" stroke-width="2"/>`;
+    const ponto = (xx, v) => `<circle cx="${xx}" cy="${y}" r="5.5" fill="var(${v === "receita" ? "--s1" : "--s2"})" stroke="var(--surface)" stroke-width="2"/>`;
+    if (xo !== null) s += ponto(xo, outra);
+    if (xm !== null) s += ponto(xm, m);
+    const xl = Math.max(xm ?? 0, xo ?? 0);
+    s += `<text x="${xl + 10}" y="${y + 4}" font-size="13" font-weight="600" fill="var(--ink)">${vm !== null ? fmtBRL(vm) : ""}</text>`;
+    s += `</g>`;
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Custo do voto por candidato">${s}</svg>` +
+    `<p class="nota">Ordenado pelo custo com ${ROT_METRICA[m].toLowerCase()}; o valor à direita é dessa métrica. Linha cinza: média da Missão (${fmtBRL(media)} por voto). F = federal, E = estadual.</p>`;
+  ligarTips(el, i => tipCandidato(DADOS.candidatos[i]));
+}
+
+// ---------- dispersão votos × dinheiro (log-log) ----------
+function renderDispersao() {
+  const el = document.getElementById("c-dispersao"), W = el.clientWidth, H = Math.max(280, Math.min(380, W * 0.75));
+  const m = estado.metrica;
+  const c = candidatosFiltrados().map(d => ({ ...d, i: DADOS.candidatos.indexOf(d) })).filter(d => d.votos > 0 && d[m] > 0);
+  const pad = { l: 58, r: 16, t: 12, b: 38 };
+  const xd0 = pot10Abaixo(Math.min(...c.map(d => d.votos))), xd1 = pot10Acima(Math.max(...c.map(d => d.votos)));
+  const yd0 = pot10Abaixo(Math.min(...c.map(d => d[m]))), yd1 = pot10Acima(Math.max(...c.map(d => d[m])));
+  const x = logEsc(xd0, xd1, pad.l, W - pad.r), y = logEsc(yd0, yd1, H - pad.b, pad.t);
+  let s = `<defs><clipPath id="clip-disp"><rect x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}"/></clipPath></defs>`;
+  for (let t = xd0; t <= xd1 * 1.0001; t *= 10) {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--grid)"/>`;
+    s += `<text x="${x(t)}" y="${H - pad.b + 16}" text-anchor="middle" font-size="12" fill="var(--muted)">${fmtNum(t)}</text>`;
+  }
+  for (let t = yd0; t <= yd1 * 1.0001; t *= 10) {
+    s += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/>`;
+    s += `<text x="${pad.l - 6}" y="${y(t) + 4}" text-anchor="end" font-size="12" fill="var(--muted)">${fmtCompacto(t)}</text>`;
+  }
+  s += `<text x="${(pad.l + W - pad.r) / 2}" y="${H - 4}" text-anchor="middle" font-size="13" fill="var(--ink-2)">Votos nominais</text>`;
+  // diagonais de custo fixo por voto
+  const rotDiag = [];
+  [0.1, 1, 10, 100].forEach(cv => {
+    const xa = xd0, xb = xd1;
+    s += `<line clip-path="url(#clip-disp)" x1="${x(xa)}" y1="${y(cv * xa)}" x2="${x(xb)}" y2="${y(cv * xb)}" stroke="var(--axis)" stroke-width="1"/>`;
+    // rótulo onde a diagonal sai pela direita ou pelo topo
+    const xr = Math.min(xd1, yd1 / cv);
+    if (cv * xr >= yd0 && xr >= xd0) {
+      const lx = x(xr) - 4, ly = y(cv * xr) + 12;
+      const rot = `${fmtBRL(cv, cv < 1 ? 2 : 0)}/voto`;
+      if (ly < H - pad.b - 4) {
+        s += `<text x="${lx}" y="${ly}" text-anchor="end" font-size="12" fill="var(--muted)">${rot}</text>`;
+        rotDiag.push({ x0: lx - rot.length * 6, x1: lx, y0: ly - 10, y1: ly + 2 });
+      }
+    }
+  });
+  c.forEach(d => {
+    const cx = x(d.votos), cy = y(d[m]);
+    s += `<g data-i="${d.i}"><circle cx="${cx}" cy="${cy}" r="12" fill="transparent"/>` +
+      `<circle cx="${cx}" cy="${cy}" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/></g>`;
+  });
+  // rótulos: mais votados primeiro; cada um tenta direita, esquerda, acima e abaixo e
+  // é omitido (fica no tooltip) se colidir com outro rótulo ou ponto
+  const caixas = rotDiag.concat(c.map(d => ({ x0: x(d.votos) - 6, x1: x(d.votos) + 6, y0: y(d[m]) - 6, y1: y(d[m]) + 6 })));
+  const colide = b => b.x0 < pad.l || b.x1 > W - pad.r || b.y0 < pad.t || b.y1 > H - pad.b ||
+    caixas.some(o => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0);
+  [...c].sort((a, b) => b.votos - a.votos).forEach(d => {
+    const cx = x(d.votos), cy = y(d[m]), nome = titulo(d.nome), tw = nome.length * 6.4;
+    const opcoes = [
+      { x: cx + 10, y: cy + 4, a: "start", b: { x0: cx + 9, x1: cx + 11 + tw, y0: cy - 7, y1: cy + 7 } },
+      { x: cx - 10, y: cy + 4, a: "end", b: { x0: cx - 11 - tw, x1: cx - 9, y0: cy - 7, y1: cy + 7 } },
+      { x: cx, y: cy - 11, a: "middle", b: { x0: cx - tw / 2, x1: cx + tw / 2, y0: cy - 22, y1: cy - 8 } },
+      { x: cx, y: cy + 20, a: "middle", b: { x0: cx - tw / 2, x1: cx + tw / 2, y0: cy + 8, y1: cy + 22 } },
+    ];
+    const op = opcoes.find(o => !colide(o.b));
+    if (!op) return;
+    caixas.push(op.b);
+    s += `<text x="${op.x}" y="${op.y}" text-anchor="${op.a}" font-size="13" fill="var(--ink)" pointer-events="none">${esc(nome)}</text>`;
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Votos versus ${ROT_METRICA[m]}">${s}</svg>` +
+    `<p class="nota">Eixo vertical: ${ROT_METRICA[m].toLowerCase()} do candidato. Ambos os eixos em escala logarítmica.</p>`;
+  ligarTips(el, i => tipCandidato(DADOS.candidatos[i]));
+}
+
+// ---------- comparativo com agremiações ----------
+function renderAgrem() {
+  const el = document.getElementById("c-agrem"), W = el.clientWidth, m = estado.metrica;
+  const cargos = estado.cargo === "TODOS" ? ["DEPUTADO FEDERAL", "DEPUTADO ESTADUAL"] : [estado.cargo];
+  const rotW = Math.min(150, W * 0.38), padR = 64, linhaH = 22, barH = 14;
+  let html = "";
+  cargos.forEach(cargo => {
+    const ag = DADOS.agremiacoes.filter(a => a.cargo === cargo && a.votos > 0)
+      .map(a => ({ ...a, cv: a[m] / a.votos, k: DADOS.agremiacoes.indexOf(a) })).sort((a, b) => b.cv - a.cv);
+    const max = Math.max(...ag.map(a => a.cv)), passo = passoBonito(max, 4);
+    const xmax = Math.ceil(max / passo) * passo;
+    const top = 18, H = top + ag.length * linhaH + 4;
+    const x = linear(0, xmax, rotW, W - padR);
+    let s = "";
+    for (let t = 0; t <= xmax + 1e-9; t += passo) {
+      s += `<line x1="${x(t)}" x2="${x(t)}" y1="${top - 4}" y2="${H}" stroke="var(--grid)"/>`;
+      s += `<text x="${x(t)}" y="${top - 8}" text-anchor="middle" font-size="12" fill="var(--muted)">${fmtBRL(t, 0)}</text>`;
+    }
+    ag.forEach((a, j) => {
+      const y = top + j * linhaH, mi = a.agrem === "MISSÃO";
+      s += `<g data-i="${a.k}"><rect x="0" y="${y}" width="${W}" height="${linhaH}" fill="transparent"/>`;
+      s += `<text x="${rotW - 8}" y="${y + linhaH / 2 + 4}" text-anchor="end" font-size="13" fill="var(${mi ? "--ink" : "--ink-2"})" font-weight="${mi ? 650 : 400}">${esc(cortar(a.agrem, rotW - 10))}</text>`;
+      s += `<path d="${barraH(x(0), y + (linhaH - barH) / 2, x(a.cv) - x(0), barH)}" fill="var(${mi ? "--s1" : "--neutral"})"/>`;
+      s += `<text x="${x(a.cv) + 6}" y="${y + linhaH / 2 + 4}" font-size="13" fill="var(--ink)" font-weight="${mi ? 650 : 400}">${fmtBRL(a.cv)}</text></g>`;
+    });
+    html += `<div style="font-size:13px;font-weight:600;margin:${html ? 14 : 0}px 0 2px">${cargoCurto(cargo)}</div>` +
+      `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Custo do voto por agremiação, ${cargoCurto(cargo)}">${s}</svg>`;
+  });
+  el.innerHTML = html + `<p class="nota">Barra amarela: Missão. Considera só candidatos com prestação de contas entregue.</p>`;
+  ligarTips(el, k => {
+    const a = DADOS.agremiacoes[k];
+    return `<b>${esc(a.agrem)}</b> <span class="cargo-tag">${cargoCurto(a.cargo)}</span>` +
+      linha("Candidatos com contas", a.candidatos) + linha("Eleitos", a.eleitos) +
+      linha("Votos nominais", fmtNum(a.votos)) + linha("Receita", fmtBRL(a.receita, 0)) + linha("Despesa", fmtBRL(a.despesa, 0)) +
+      linha("Receita ÷ voto", fmtBRL(a.receita / a.votos)) + linha("Despesa ÷ voto", fmtBRL(a.despesa / a.votos));
+  });
+}
+
+// ---------- origem dos recursos (barras empilhadas) ----------
+const ORIGENS = [
+  { k: "fefc", rot: "Fundo eleitoral (FEFC)" },
+  { k: "pessoas_fisicas", rot: "Pessoas físicas" },
+  { k: "coletivo", rot: "Financiamento coletivo" },
+  { k: "proprios", rot: "Recursos próprios" },
+  { k: "fundo_partidario", rot: "Fundo partidário" },
+  { k: "outros", rot: "Outros" },
+];
+function renderOrigem() {
+  const el = document.getElementById("c-origem"), W = el.clientWidth;
+  const c = candidatosFiltrados().map(d => ({ ...d, i: DADOS.candidatos.indexOf(d) })).sort((a, b) => b.receita - a.receita);
+  // só origens que aparecem nos dados (cor fixa por origem, na ordem da lista)
+  const presentes = ORIGENS.filter(o => DADOS.candidatos.some(d => d[o.k] > 0)).map((o, j) => ({ ...o, cor: `--s${j + 1}` }));
+  const usadas = presentes.filter(o => c.some(d => d[o.k] > 0));
+  document.getElementById("leg-origem").innerHTML = usadas.map(o => `<span><i style="background:var(${o.cor})"></i>${o.rot}</span>`).join("");
+  const rotW = Math.min(150, W * 0.36), padR = 70, linhaH = 26, barH = 14, top = 18;
+  const H = top + c.length * linhaH + 4;
+  const max = Math.max(...c.map(d => d.receita)), passo = passoBonito(max, 4), xmax = Math.ceil(max / passo) * passo;
+  const x = linear(0, xmax, rotW, W - padR);
+  let s = "";
+  for (let t = 0; t <= xmax + 1e-9; t += passo) {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${top - 4}" y2="${H}" stroke="var(--grid)"/>`;
+    s += `<text x="${x(t)}" y="${top - 8}" text-anchor="middle" font-size="12" fill="var(--muted)">${fmtCompacto(t)}</text>`;
+  }
+  c.forEach((d, j) => {
+    const y = top + j * linhaH, by = y + (linhaH - barH) / 2;
+    s += `<g data-i="${d.i}"><rect x="0" y="${y}" width="${W}" height="${linhaH}" fill="transparent"/>`;
+    s += `<text x="${rotW - 8}" y="${y + linhaH / 2 + 4}" text-anchor="end" font-size="13" fill="var(--ink)">${esc(titulo(d.nome))}</text>`;
+    let acc = 0;
+    const segs = usadas.filter(o => d[o.k] > 0);
+    segs.forEach((o, n) => {
+      const x0 = x(acc), x1 = x(acc + d[o.k]);
+      const gap = n < segs.length - 1 ? 2 : 0, w = Math.max(0, x1 - x0 - gap);
+      s += n === segs.length - 1
+        ? `<path d="${barraH(x0, by, w, barH)}" fill="var(${o.cor})"/>`
+        : `<rect x="${x0}" y="${by}" width="${w}" height="${barH}" fill="var(${o.cor})"/>`;
+      acc += d[o.k];
+    });
+    s += `<text x="${x(d.receita) + 6}" y="${y + linhaH / 2 + 4}" font-size="13" fill="var(--ink)">${fmtCompacto(d.receita)}</text></g>`;
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Origem da receita por candidato">${s}</svg>`;
+  ligarTips(el, i => {
+    const d = DADOS.candidatos[i];
+    return `<b>${esc(titulo(d.nome))}</b> <span class="cargo-tag">${cargoCurto(d.cargo)}</span>` +
+      usadas.filter(o => d[o.k] > 0).map(o => linha(o.rot, `${fmtBRL(d[o.k])} (${fmtPct(100 * d[o.k] / d.receita)})`)).join("") +
+      linha("Total", fmtBRL(d.receita)) + linha("Doadores", d.doadores);
+  });
+}
+
+// ---------- despesas por tipo ----------
+function renderGastos() {
+  const el = document.getElementById("c-gastos"), W = el.clientWidth;
+  const nrs = new Set(candidatosFiltrados().map(d => d.nr));
+  const porTipo = {};
+  DADOS.despesas.filter(d => nrs.has(d.nr)).forEach(d => { porTipo[d.tipo] = (porTipo[d.tipo] || 0) + d.valor; });
+  let tipos = Object.entries(porTipo).map(([tipo, valor]) => ({ tipo, valor })).sort((a, b) => b.valor - a.valor);
+  const total = soma(tipos, "valor");
+  if (tipos.length > 8) {
+    const resto = tipos.slice(7);
+    tipos = tipos.slice(0, 7).concat([{ tipo: `Outros (${resto.length} tipos)`, valor: soma(resto, "valor"), detalhe: resto }]);
+  }
+  const rotW = Math.min(230, W * 0.46), padR = 78, linhaH = 26, barH = 14, top = 4;
+  const H = top + tipos.length * linhaH + 4;
+  const x = linear(0, Math.max(...tipos.map(t => t.valor)), rotW, W - padR);
+  const curto = t => cortar(t, rotW - 10, 6.6);
+  let s = "";
+  tipos.forEach((t, j) => {
+    const y = top + j * linhaH;
+    s += `<g data-i="${j}"><rect x="0" y="${y}" width="${W}" height="${linhaH}" fill="transparent"/>`;
+    s += `<text x="${rotW - 8}" y="${y + linhaH / 2 + 4}" text-anchor="end" font-size="13" fill="var(--ink)">${esc(curto(t.tipo))}</text>`;
+    s += `<path d="${barraH(x(0), y + (linhaH - barH) / 2, x(t.valor) - x(0), barH)}" fill="var(--s1)"/>`;
+    s += `<text x="${x(t.valor) + 6}" y="${y + linhaH / 2 + 4}" font-size="13" fill="var(--ink)">${fmtPct(100 * t.valor / total)}</text></g>`;
+  });
+  el.innerHTML = total > 0
+    ? `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Despesas por tipo">${s}</svg><p class="nota">Total: ${fmtBRL(total)}. Percentual sobre a despesa contratada.</p>`
+    : `<p class="nota">Nenhuma despesa registrada para este filtro.</p>`;
+  ligarTips(el, j => {
+    const t = tipos[j];
+    return `<b>${esc(t.tipo)}</b>` + linha("Valor", fmtBRL(t.valor)) + linha("Participação", fmtPct(100 * t.valor / total)) +
+      (t.detalhe ? t.detalhe.map(r => linha(esc(r.tipo), fmtBRL(r.valor))).join("") : "");
+  });
+}
+
+// ---------- tabelas ----------
+const COLS = [
+  { k: "nome", rot: "Candidato", txt: true, v: d => titulo(d.nome), f: (v, d) => `${esc(v)} <span class="cargo-tag">${d.nr}</span>` },
+  { k: "cargo", rot: "Cargo", txt: true, v: d => cargoCurto(d.cargo) },
+  { k: "votos", rot: "Votos", v: d => d.votos, f: fmtNum },
+  { k: "receita", rot: "Receita", v: d => d.receita, f: v => fmtBRL(v) },
+  { k: "despesa", rot: "Despesa", v: d => d.despesa, f: v => fmtBRL(v) },
+  { k: "custo", rot: "Receita ÷ voto", v: d => custo(d, "receita") ?? -1, f: v => v < 0 ? "—" : fmtBRL(v) },
+  { k: "custo_d", rot: "Despesa ÷ voto", v: d => custo(d, "despesa") ?? -1, f: v => v < 0 ? "—" : fmtBRL(v) },
+  { k: "fefc", rot: "% FEFC", v: d => d.receita > 0 ? 100 * d.fefc / d.receita : 0, f: fmtPct },
+  { k: "doadores", rot: "Doadores", v: d => d.doadores, f: fmtNum },
+  { k: "prestacao", rot: "Prestação", txt: true, v: d => titulo(d.prestacao) + " · " + d.data },
+];
+function renderTabela() {
+  const t = document.getElementById("t-cand"), o = estado.ordTab, col = COLS.find(c => c.k === o.col);
+  const c = [...candidatosFiltrados()].sort((a, b) => {
+    const va = col.v(a), vb = col.v(b);
+    return (typeof va === "string" ? va.localeCompare(vb, "pt-BR") : va - vb) * o.dir;
+  });
+  t.innerHTML = `<thead><tr>${COLS.map(c => `<th class="${c.txt ? "txt" : ""}" data-k="${c.k}" ${c.k === o.col ? `aria-sort="${o.dir > 0 ? "ascending" : "descending"}"` : ""}>${c.rot}</th>`).join("")}</tr></thead>` +
+    `<tbody>${c.map(d => `<tr>${COLS.map(cc => { const v = cc.v(d); return `<td class="${cc.txt ? "txt" : ""}">${cc.f ? cc.f(v, d) : esc(v)}</td>`; }).join("")}</tr>`).join("")}</tbody>`;
+  t.querySelectorAll("th").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.k;
+    estado.ordTab = { col: k, dir: o.col === k ? -o.dir : (COLS.find(c => c.k === k).txt ? 1 : -1) };
+    renderTabela();
+  }));
+}
+function renderFornecedores() {
+  const f = DADOS.fornecedores.slice(0, 12);
+  document.getElementById("t-forn").innerHTML =
+    `<thead><tr><th class="txt">Fornecedor</th><th>Valor</th><th>Candidatos</th><th class="txt">Tipo de despesa</th></tr></thead>` +
+    `<tbody>${f.map(d => `<tr><td class="txt">${esc(titulo(d.nome))}</td><td>${fmtBRL(d.valor)}</td><td>${d.candidatos}</td><td class="txt">${esc(d.tipos)}</td></tr>`).join("")}</tbody>`;
+}
+
+// ---------- montagem ----------
+function renderTudo() {
+  renderKpis(); renderRanking(); renderDispersao(); renderAgrem(); renderOrigem(); renderGastos(); renderTabela();
+}
+function ligarSeg(id, fn) {
+  const el = document.getElementById(id);
+  el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    fn(b.dataset.v);
+  }));
+}
+ligarSeg("f-cargo", v => { estado.cargo = v; renderTudo(); });
+ligarSeg("f-metrica", v => { estado.metrica = v; renderTudo(); });
+ligarSeg("f-tema", v => {
+  if (v === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", v);
+});
+
+const tipos = [...new Set(DADOS.candidatos.map(d => titulo(d.prestacao)))].join(", ");
+const datas = DADOS.candidatos.map(d => d.data.split("/").reverse().join("-")).sort();
+const br = s => s.split("-").reverse().join("/");
+document.getElementById("aviso").innerHTML =
+  `<b>Dados preliminares.</b> As contas da Missão são do tipo <i>${esc(tipos)}</i>, entregues entre ${br(datas[0])} e ${br(datas.at(-1))}. ` +
+  `A despesa contratada ainda está incompleta (a receita é mais confiável por enquanto); os números mudam com a prestação final, 30 dias após a eleição.` +
+  (DADOS.excluidos.length ? `<br><b>Fora da análise:</b> ` + DADOS.excluidos.map(d =>
+    `${esc(titulo(d.nome))} (${d.nr}, ${cargoCurto(d.cargo).toLowerCase()}, ${fmtNum(d.votos)} votos) — ${esc(d.motivo)}`).join("; ") +
+    `. Não entra nos gráficos, nos totais nem na média da Missão; só a lista de fornecedores ainda o inclui.` : "");
+document.getElementById("rodape").textContent =
+  `Fonte: TSE — Portal de Dados Abertos (prestação de contas e votação por seção). Gerado em ${DADOS.gerado_em} por scripts/05_dashboard_missao.r.`;
+
+renderFornecedores();
+renderTudo();
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(renderTudo, 120); });
+</script>
+</body>
+</html>
